@@ -1,4 +1,5 @@
-import time
+import time   # measuring the time process
+import sys    # To read arguments from system command line
 
 def int4(code, i):
     return code[i]*2**24 + code[i+1]*2**16 + code[i+2]*2**8 + code[i+3]
@@ -28,7 +29,10 @@ marks = [SOC, SIZ, COD, QCD, QCC, COC, RGN, POC, CRG, COM, TLM, PLM, PLT, PPM, P
 
 # B02C7986 código único de asesoría de protección s.a.
 
-filename = input('Ingrese el nombre del archivo jp2: ')
+if len(sys.argv) < 2:
+    filename = input('Ingrese el nombre del archivo jp2: ')
+else :
+    filename = sys.argv[1]
 if filename == '':  filename = '083_078_2021_he.jp2'
 
 imfile   = open(filename, 'rb')
