@@ -237,6 +237,57 @@ def textcode(code, ini, end):
         else: print('!%d'%code[i], end='')
     print()
 
+def transHeader(code):
+    pass
+
+def imageRequest(code, x1, y1, res, lay, precROI):
+    ALL = -1
+    comp = ALL
+    c1 = True if code == ALL else False
+    c2 = True if lay  == ALL else False
+    c3 = True if res  == ALL else False
+    c4 = True if comp == ALL else False
+    dx, numPrecX = 0, 0
+    missing = []
+    packs = []
+
+    imgInfo = code
+    resolutions = res+1
+    layers = lay+1
+    tiles = 0
+    components = 2
+    lstPcks = []
+    if x1 > 0 or y1 > 0 :
+        pass
+        #coord2Prec(x1, y1, res)
+
+    num = 0
+    numTiles = imgInfo.tx * imgInfo.ty
+    numRes = imgInfo.numLev + 1
+
+    for t in range(numTiles):
+        for l in range(imgInfo.numLay):
+            for r in range(numRes):
+                for c in range(imgInfo.numCmp):
+                    numPrec = imgInfo.numPrecX[r] * imgInfo.numPrecY[r]
+                    for p in range(numPrec):
+                        if (t <= tiles or c1) and (l <= layers or c2) and (r <= resolutions or c3) and (c <= components or c4):
+                            lgral = (t // imgInfo.tx) * imgInfo.numPrecX[r] + p // imgInfo.numPrecX[r]
+                            cgral = (t % imgInfo.tx) * imgInfo.numPrecX[r] + p % imgInfo.numPrecX[r]
+                            pg = imgInfo.numPrecX[r] * imgInfo.tx * lgral + cgral
+                            if pg >= precROI[r].tl and pg <= precROI[r].br:
+                                numPrecX = imgInfo.numPrecX[r] * imgInfo.tx
+                                dx = precROI[r].tr - precROI[r].tl
+                                startLine = precROI[r].tl + (pg - precROI[r].tl) // numPrecX * numPrecX
+                                if pg >= startLine and pg <= startLine + dx:
+                                    packs.append(num)
+                                    if lstPcks[num] is None:
+                                        missing.append(num)
+                        num += 1
+
+    mpacks = [missing[i] for i in range(len(missing))]
+
+    return mpacks
 # parse JP2K image file
 j = 0
 aSot = []
